@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ReactComponent as Logo } from '../assets/logo.svg';
 import "./Header.styles.scss";
@@ -11,8 +11,7 @@ import { useSelector } from 'react-redux';
 
 const  Header = () => {
 
-    const [cartDropdownIsOpen, setCartdropdownIsOpen] = useState(false);
-    const dropdownRef = useRef(null);
+    const [cartDropdownIsOpen, setCartdropdownIsOpen] = useState(true);
     const user = useSelector(state => state.user.currentUser)
 
     const cartDropdownToggle = () => {
@@ -22,8 +21,6 @@ const  Header = () => {
     const logout = () => {
         auth.signOut();
     }
-
-    console.log(cartDropdownIsOpen)
 
     return(
         <div className="header">
@@ -52,8 +49,8 @@ const  Header = () => {
                 
             </div>
            
-            {cartDropdownIsOpen ? null :
-            <CartDropdown />}
+            {cartDropdownIsOpen || !user ? null :
+            <CartDropdown cartDropdownToggle={cartDropdownToggle} />}
 
            
             

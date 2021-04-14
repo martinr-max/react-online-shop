@@ -5,14 +5,22 @@ import {Route, Switch} from 'react-router-dom';
 import ShopPage from './Pages/HomePage/Shop/ShopPage.component';
 import Header from './components/header/Header.component';
 import LoginPage from './Pages/HomePage/Login/LoginPage.component';
-import { auth, createUserProfile } from './firebase/firebase.config';
+import { auth, createUserProfile, addCollectionsToDatabase } from './firebase/firebase.config';
 import {useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import setCurrentUser from './redux/user/userActions.actions';
+import CheckoutPage from './Pages/Checkout/CheckoutPage.component';
+import SHOP_DATA from './data/shopItems.data';
 
 function App() {
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    addCollectionsToDatabase('collection', SHOP_DATA.map(({title, items}) => {
+      return {title, items}
+    }))
+  }, [])
 
     useEffect(() =>{
 
@@ -43,6 +51,7 @@ function App() {
         <Route path="/" exact component={Homepage} />
         <Route path="/shop" component={ShopPage} />
         <Route path="/signup" component={LoginPage} />
+        <Route path="/checkout" component={CheckoutPage} />
       </Switch>  
     </div>
   );

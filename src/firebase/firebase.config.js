@@ -13,7 +13,13 @@ const config = {
 
 }
 
-firebase.initializeApp(config);
+if (!firebase.apps.length) {
+    firebase.initializeApp(config);
+ }else {
+    firebase.app(); // if already initialized, use that one
+ }
+ 
+
 
 export const auth = firebase.auth();
 export const firestore =  firebase.firestore();
@@ -21,6 +27,32 @@ export const firestore =  firebase.firestore();
 const provider = new firebase.auth.GoogleAuthProvider();
 provider.setCustomParameters({ prompt: 'select_account' });
 export const signInWithGoogle = () => auth.signInWithPopup(provider);
+
+export const addCollectionsToDatabase = async (collectionKey, objectToAdd) => {
+    const collectionRef = firestore.collection(collectionKey)
+    const batch = firestore.batch();
+
+    collectionRef.get()
+        if(collectionKey) {
+            console.log(collectionKey)
+            return
+        }
+        else {
+        
+                objectToAdd.forEach(obj => {
+                    const newDocRef = collectionRef.doc()
+                    batch.set(newDocRef, obj)
+                })
+        
+            
+
+        }
+    
+
+   
+    return batch.commit()
+   
+}
 
 export const createUserProfile = async (userAuth, additionalData) => {
     if(!userAuth) {

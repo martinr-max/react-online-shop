@@ -12,6 +12,7 @@ export default memo(function CollectionPreview({title, items }) {
                 .filter((item, number) => number < 4)
                 .map((item) => {
                     return <ShopItem
+                        item ={item}
                         key={item.id}
                         name={item.name}
                         price={item.price}
@@ -19,6 +20,7 @@ export default memo(function CollectionPreview({title, items }) {
                      />
                 }) }
             </div>
+
         </div>
     );
 })

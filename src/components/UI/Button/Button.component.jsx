@@ -3,9 +3,9 @@ import "./Button.styles.scss";
 
 
 
-export default function Button({children, ...otherProps}) {
+export default function Button({children, inverted, ...otherProps}) {
     return(
-        <div className="custom-button" {...otherProps}>
+        <div className={`${inverted ? 'inverted' : ''} custom-button`} {...otherProps}>
             {children}
         </div>
     );
