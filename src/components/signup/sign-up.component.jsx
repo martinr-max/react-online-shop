@@ -14,9 +14,7 @@ const SIGNUP_MUTATION = gql`
       email: $email
       password: $password
       name: $name
-    }
-     
-    ) {
+    }) {
       _id
     }
   }

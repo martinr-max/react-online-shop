@@ -24,7 +24,6 @@ export default function Collection() {
 
     },[title])
 
-
     return(
         <div className="collection-preview">
             <div className="preview">

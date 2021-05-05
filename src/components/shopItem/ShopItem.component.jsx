@@ -4,8 +4,6 @@ import { useMutation, gql,  } from '@apollo/client';
 import {GET_PRODUCTS_FROM_CART} from '../cart/Cart.component'
 import Button from '../UI/Button/Button.component';
 
-
-
 export const ADD_PRODUCT_TO_CART = gql`
   mutation addProductToCart(
       $productId: String!,
@@ -20,12 +18,9 @@ export const ADD_PRODUCT_TO_CART = gql`
         userId: $userId,
         price: $price
     })
-
     {
         user
-    }
-    }
-  
+    }}
 `;
 
 
