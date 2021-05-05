@@ -1,30 +1,46 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useMutation, gql } from '@apollo/client';
+import { Link, useHistory } from 'react-router-dom';
 import { ReactComponent as Logo } from '../assets/logo.svg';
 import "./Header.styles.scss";
-import { auth } from '../../firebase/firebase.config';
 import ShoppingBag from './shopping-bag/ShoppingBag.component';
 import CartDropdown from '../cart/Cart.component';
-import { useSelector } from 'react-redux';
-
+const LOGOUT_MUTATION = gql`
+  mutation{logout}
+`;
 
 
 const  Header = () => {
 
     const [cartDropdownIsOpen, setCartdropdownIsOpen] = useState(true);
-    const user = useSelector(state => state.user.currentUser)
+    const [token, setToken] = useState("");
+    const history = useHistory()
+
+
+    useEffect( () => {
+            let token = localStorage.getItem("auth_token");
+            setToken(token);
+    }, [])
+
+    const [logout] =  useMutation(LOGOUT_MUTATION, {
+        variables: {
+          
+        },
+        onCompleted: () => {
+          localStorage.removeItem("auth_token");
+          history.push('/signup');
+          window.location.reload();
+        }
+    });
+    
 
     const cartDropdownToggle = () => {
         setCartdropdownIsOpen(!cartDropdownIsOpen)
     }
 
-    const logout = () => {
-        auth.signOut();
-    }
-
     return(
         <div className="header">
-           
+           {console.log(token)}
             <Link className="logo-container" to="/">
                 <Logo className="logo" />
             </Link>
@@ -36,7 +52,7 @@ const  Header = () => {
                     CONTACT
                 </Link>
                 
-                {user && user ? 
+                {token !== "" && token  ? 
                 <div style={{display: "flex", marginTop: "5px"}}>
                 <div className="option" onClick={logout}>
                   SIGN OUT
@@ -49,7 +65,7 @@ const  Header = () => {
                 
             </div>
            
-            {cartDropdownIsOpen || !user ? null :
+            {cartDropdownIsOpen || !token ? null :
             <CartDropdown cartDropdownToggle={cartDropdownToggle} />}
 
            

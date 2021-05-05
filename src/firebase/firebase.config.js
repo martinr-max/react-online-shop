@@ -31,27 +31,32 @@ export const signInWithGoogle = () => auth.signInWithPopup(provider);
 export const addCollectionsToDatabase = async (collectionKey, objectToAdd) => {
     const collectionRef = firestore.collection(collectionKey)
     const batch = firestore.batch();
-
-    collectionRef.get()
         if(collectionKey) {
-            console.log(collectionKey)
             return
-        }
-        else {
-        
+        } else {
                 objectToAdd.forEach(obj => {
                     const newDocRef = collectionRef.doc()
                     batch.set(newDocRef, obj)
                 })
-        
-            
-
         }
-    
-
-   
     return batch.commit()
    
+}
+
+export const getCollection = (collection) => {
+    const mapCollection = collection.docs.map(doc => {
+        const {title, items} = doc.data();
+        return {
+            id: doc.id,
+            title,
+            items
+        }
+    })
+
+    return mapCollection
+
+    
+
 }
 
 export const createUserProfile = async (userAuth, additionalData) => {

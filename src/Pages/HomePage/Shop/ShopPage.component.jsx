@@ -1,16 +1,31 @@
-import React, { memo } from 'react';
+import React from 'react';
+import { useQuery, gql } from '@apollo/client';
 import "./ShopPage.styles.scss";
 import CollectionPreview from '../../../components/collectionPreview/CollectionPreview.component';
-import SHOP_DATA  from '../../../data/shopItems.data';
+
+const GET_CATEGORY = gql`
+  query getCategory {
+    getCategory {
+     title
+    }
+  }
+`;
 
 
-export default memo(function ShopPage() {
+export default function ShopPage() {
+
+    const { loading, error, data } = useQuery(GET_CATEGORY);
+
+  if (loading) return 'Loading...';
+  if (error) return `Error! ${error.message}`;
+
+  
 
     return(
         <div>
-            {SHOP_DATA.map((section => {
-                return <CollectionPreview key={section.id} items={section.items} title={section.title}/>
+            {data && data.getCategory.map((section => {
+                return <CollectionPreview  title={section.title}/>
             }))}
         </div>
     );
-})
+}

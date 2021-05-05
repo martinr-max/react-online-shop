@@ -1,15 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import {useQuery} from '@apollo/react-hooks'
 import './Checkout.styles.scss';
-import { useSelector } from 'react-redux';
 import CheckoutItem from '../../components/checkoutItem/CheckoutItem.component';
+import {GET_PRODUCTS_FROM_CART} from '../../components/cart/Cart.component';
 
 
 export default function CheckoutPage() {
 
-    const cartItems = useSelector(state => state.cart.cartItems);
+    const [userId, setUserId] = useState("");
 
-    const totalPrice = cartItems.reduce((accumulatedQuantity, cartItem) =>
-    accumulatedQuantity + cartItem.quantity * cartItem.price, 0);
+
+    useEffect(() => {
+        const user =localStorage.getItem("auth-token")
+        setUserId(JSON.parse(user))
+
+    }, []);
+
+    const { loading, error, data } = useQuery(GET_PRODUCTS_FROM_CART, {
+        variables: {
+             userId
+        }
+    })
+
+    if (loading) return 'Loading...';
+    if (error) return `Error! ${error.message}`;
     return(
         <div className="checkout-page">
             <div className="checkout-header">
@@ -29,11 +43,14 @@ export default function CheckoutPage() {
                     <span>Remove</span>
                 </div>
             </div>
-           {cartItems.map(item => {
-               return <CheckoutItem key={item.id} item={item} />
+           {data.getCart.products.map((item) => {
+               return <div key={item.productId}>
+                    <CheckoutItem  item={item} userId={userId} />
+               </div>
+               
            })}
            <div>
-               <span className="total"> {totalPrice} </span>
+               <span className="total"> {data.getCart.subTotal} </span>
            </div>
         </div>
         

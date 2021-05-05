@@ -4,19 +4,48 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router } from 'react-router-dom';
-import {Provider} from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react'
-import {store, persiststore} from './redux/store';
+import { onError } from 'apollo-link-error'
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  ApolloLink,
+} from '@apollo/client';
+import { HttpLink } from 'apollo-link-http';
+
+
+const errorLink = onError(({ graphQLErrors }) => {
+  if (graphQLErrors) graphQLErrors.map(({ message }) => console.log(message))
+})
+
+
+const cache = new InMemoryCache({
+ 
+});
+console.log(cache)
+  
+const httplink = new HttpLink({
+  uri: 'http://localhost:3001/graphql',
+  credentials: "include"
+})
+
+
+
+const client = new ApolloClient({
+  cache,
+  link: ApolloLink.from([errorLink, httplink]),
+  fetchOptions: {
+    credentials: 'include'
+ }
+})
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
+    <ApolloProvider client={client} >
     <Router>
-      <PersistGate persistor={persiststore}>
       <App />
-      </PersistGate>
     </Router>
-    </Provider>
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
